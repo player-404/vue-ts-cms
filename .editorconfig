@@ -1,0 +1,33 @@
+# 配置文件说明: http://editorconfig.org
+# 不同操作系统的字符风格可能不同，使用 editorconfig 配置文件使文件在不同系统下的风格显示一致，以免出现问题
+# 编辑器在打开项目文件时，会首先去查找该配置文件
+
+
+# 根文件
+root = true
+
+# 该配置文件对项目中的所有文件适用
+[*]
+
+# 设置文件的字符集
+charset = utf-8
+
+# 缩进风格 (tap | space)
+indent_style = space
+
+# 缩进大小
+indent_size = 2
+
+# 控制换行类型 (lf | cr | crlf)
+end_of_line  = lf
+
+# 去除首行的任意空白字符
+trim_trailing_whitespace = true
+
+# 始终在文件末尾插入一个新行
+insert_final_newline = true
+
+# 仅 md 文件适用以下规则
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = true
