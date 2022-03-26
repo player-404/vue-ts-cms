@@ -1,0 +1,5 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# 在git提交代码前 执行下面的命令
+npx --no-install commitlint --edit
