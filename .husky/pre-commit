@@ -1,4 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm test
+# pre-commit: 在git commit 之前会执行下面的命令
+npm run lint
