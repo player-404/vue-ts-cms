@@ -97,6 +97,10 @@ class Request {
       this.axiosInstance
         .request<T>(config)
         .then((res) => {
+          // 每次请求的响应拦截器
+          if (config.interceptors?.responseInterceptors) {
+            res = config.interceptors.responseInterceptors(res);
+          }
           resolve(res);
         })
         .catch((err) => {
