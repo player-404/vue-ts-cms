@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Home from "../views/Home.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Home",
-    component: Home,
+    // 路由懒加载会将所有的组件都打包在一个js文件中，如果想要每个组件都要单独打包成一个文件使用注释 /* webpackChunkName: "[chunk-name]" */
+    component: () =>
+      import(/* webpackChunkName: "home-chunk" */ "@/views/Home.vue"),
   },
   {
     path: "/about",

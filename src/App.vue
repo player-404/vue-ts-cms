@@ -1,4 +1,25 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import instance from "./api/myApiTest";
+
+type data = {
+  msg: string;
+};
+
+const getTestData = async () => {
+  const data = await instance.request<data>({
+    method: "get",
+    url: "/test",
+    showLoading: false,
+    interceptors: {
+      requestErrorIntercrptors(error) {
+        return Promise.reject(error);
+      },
+    },
+  });
+  console.log(data.data.msg);
+};
+getTestData();
+</script>
 <template>
   <div id="nav">
     <router-link to="/">Home</router-link> |
@@ -28,5 +49,23 @@
       color: #42b983;
     }
   }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text {
+  font-size: 14px;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+
+.box-card {
+  width: 480px;
 }
 </style>

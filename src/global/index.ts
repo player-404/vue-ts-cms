@@ -1,20 +1,20 @@
-import { ElButton } from "element-plus";
-import App from "../App.vue";
-import { createApp } from "vue";
+// import { ElButton } from "element-plus";
+// import App from "../App.vue";
+// import { createApp } from "vue";
 
-interface UI {
-  [prop: string]: any;
-}
+// interface UI {
+//   [prop: string]: any;
+// }
 
-const app = createApp(App);
-const ui: UI = { ElButton };
+// const app = createApp(App);
+// const ui: UI = { ElButton };
 
-const ElementUI = (ui: UI) => {
-  for (const key in ui) {
-    app.component(key, ui[key]);
-  }
-};
+// const ElementUI = (ui: UI) => {
+//   for (const key in ui) {
+//     app.component(key, ui[key]);
+//   }
+// };
 
-ElementUI(ui);
+// ElementUI(ui);
 
-export default app;
+// export default app;

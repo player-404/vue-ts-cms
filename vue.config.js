@@ -1,11 +1,20 @@
 // vue.config.js 是对vue-cli 配置好的webpack配置进行一些额外的配置
+
+//使用该帮手函数获得类型提示
+
+/**
+ * @type {import('@vue/cli-service').ProjectOptions}
+ */
+
 const AutoImport = require("unplugin-auto-import/webpack");
 const Components = require("unplugin-vue-components/webpack");
 const { ElementPlusResolver } = require("unplugin-vue-components/resolvers");
+
 // const ElementPlus = require("unplugin-element-plus/webpack");
 
 module.exports = {
   publicPath: "./",
+  assetsDir: "./",
   // configureWebpack 可以接受一个对象或函数
   // 接收一个对象，里面的配置会与vue-cli配置好的webpack配置合并
   configureWebpack: {
@@ -18,10 +27,13 @@ module.exports = {
     plugins: [
       //按需自动引入的两个插件配置
       AutoImport({
-        resolvers: [ElementPlusResolver()],
+        resolvers: [ElementPlusResolver({ importStyle: false })],
       }),
       Components({
         resolvers: [ElementPlusResolver()],
+      }),
+      require("unplugin-element-plus/webpack")({
+        // options
       }),
     ],
 
