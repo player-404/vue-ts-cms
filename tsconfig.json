@@ -1,13 +1,20 @@
 {
   "compilerOptions": {
+    // 目标代码的js版本 next(js5/6/7)
     "target": "esnext",
+    // 目标代码需要使用的模块化方案
     "module": "esnext",
+    // 严格检查
     "strict": true,
+    // 对jsx怎么处理
     "jsx": "preserve",
+    // 辅助导入
     "importHelpers": true,
     "moduleResolution": "node",
+    // 跳过一些库的类型检测
     "skipLibCheck": true,
     "esModuleInterop": true,
+    // es module 与 commonjs module 是否能混合使用
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
@@ -26,6 +33,7 @@
       "scripthost"
     ]
   },
+  // 哪些代码需要编译解析
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
@@ -33,6 +41,7 @@
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],
+  // 哪些代码不需要类型解析
   "exclude": [
     "node_modules"
   ]

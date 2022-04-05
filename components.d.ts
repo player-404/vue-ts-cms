@@ -5,7 +5,19 @@
 declare module 'vue' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    ElForm: typeof import('element-plus/es')['ElForm']
+    ElFormItem: typeof import('element-plus/es')['ElFormItem']
+    ElInput: typeof import('element-plus/es')['ElInput']
+    ElStep: typeof import('element-plus/es')['ElStep']
+    ElSteps: typeof import('element-plus/es')['ElSteps']
+    FormContainer: typeof import('./src/components/login/FormContainer.vue')['default']
+    LoginForm: typeof import('./src/components/login/LoginForm.vue')['default']
+    SigninForm: typeof import('./src/components/login/SigninForm.vue')['default']
+    SignUpAccountForm: typeof import('./src/components/login/SignUpAccountForm.vue')['default']
+    SignUpForm: typeof import('./src/components/login/SignUpForm.vue')['default']
+    SignUpPhone: typeof import('./src/components/login/SignUpPhone.vue')['default']
+    SwitchForm: typeof import('./src/components/login/SwitchForm.vue')['default']
+    ZpButton: typeof import('./src/components/login/ZpButton.vue')['default']
   }
 }
 
