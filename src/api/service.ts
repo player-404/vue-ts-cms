@@ -67,8 +67,8 @@ class Request {
         }
 
         // 对响应体进行过滤
-        return config.data;
-        // return config;
+        // return config.data;
+        return config;
       },
       (error) => {
         console.log("全局的响应错误的拦截");

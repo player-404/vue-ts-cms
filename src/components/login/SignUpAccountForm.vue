@@ -61,24 +61,23 @@ const rules = reactive({
 
 //提交表单
 const submit = (formInstance: FormInstance | undefined) => {
-  emit("update:step", props.step + 1);
-  // loading.value = true;
-  // if (!formInstance) {
-  //   loading.value = false;
-  //   return;
-  // }
+  loading.value = true;
+  if (!formInstance) {
+    loading.value = false;
+    return;
+  }
 
-  // formInstance.validate((valid) => {
-  //   if (valid) {
-  //     console.log("表单提交成功");
-  //     loading.value = false;
+  formInstance.validate((valid) => {
+    if (valid) {
+      console.log("表单提交成功");
+      loading.value = false;
 
-  //     emit("update:step", props.step + 1);
-  //   } else {
-  //     loading.value = false;
-  //     return false;
-  //   }
-  // });
+      emit("update:step", props.step + 1);
+    } else {
+      loading.value = false;
+      return false;
+    }
+  });
 };
 </script>
 <template>

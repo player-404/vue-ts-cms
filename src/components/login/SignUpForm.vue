@@ -27,8 +27,8 @@ const activeComponent = computed(() => {
         align-center
       >
         <el-step title="输入账号" />
-        <el-step title="邮箱验证" />
-        <el-step title="登录" />
+        <el-step title="手机验证" />
+        <el-step title="注册完成" />
       </el-steps>
     </div>
     <!-- 注册表单 -->

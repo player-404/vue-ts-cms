@@ -20,6 +20,7 @@ module.exports = {
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
   },
   globals: {
     // eslint 与 vue3 setup 语法冲突， dinfineProps与defineemits 不需要导入 但eslint会报错
