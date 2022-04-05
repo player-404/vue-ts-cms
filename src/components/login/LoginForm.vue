@@ -3,8 +3,8 @@ import { ref } from "vue";
 
 import FormContainer from "component/login/FormContainer.vue";
 import SwitchForm from "./SwitchForm.vue";
-import SigninForm from "./SigninForm.vue";
-import SignupForm from "./SignUpForm.vue";
+import SignInForm from "./SignInForm.vue";
+import SignUpForm from "./SignUpForm.vue";
 
 // 切换登录方式 false: 登录   true: 注册
 const status = ref<boolean>(false);
@@ -18,7 +18,7 @@ const status = ref<boolean>(false);
           leave-active-class="animate__animated animate__rotateOutDownLeft animate__faster"
           enter-active-class="animate__animated animate__rotateInUpLeft animate__faster"
         >
-          <signin-form v-show="!status" />
+          <sign-in-form v-show="!status" />
         </Transition>
       </form-container>
       <!-- // 页面切换 -->
@@ -55,7 +55,7 @@ const status = ref<boolean>(false);
           leave-active-class="animate__animated animate__fadeOutLeft"
           typ="transition"
         >
-          <signup-form v-if="status" />
+          <sign-up-form v-if="status" />
         </Transition>
       </form-container>
     </div>

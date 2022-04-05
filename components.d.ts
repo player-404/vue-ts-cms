@@ -14,6 +14,7 @@ declare module 'vue' {
     LoginForm: typeof import('./src/components/login/LoginForm.vue')['default']
     SigninForm: typeof import('./src/components/login/SigninForm.vue')['default']
     SignUpAccountForm: typeof import('./src/components/login/SignUpAccountForm.vue')['default']
+    SignUpComplete: typeof import('./src/components/login/SignUpComplete.vue')['default']
     SignUpForm: typeof import('./src/components/login/SignUpForm.vue')['default']
     SignUpPhone: typeof import('./src/components/login/SignUpPhone.vue')['default']
     SwitchForm: typeof import('./src/components/login/SwitchForm.vue')['default']

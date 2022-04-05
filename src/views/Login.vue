@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import LoginFrom from "@/components/login/LoginForm.vue";
+import LoginForm from "@/components/login/LoginForm.vue";
 </script>
 <template>
   <div class="login">
-    <login-from />
+    <login-form />
   </div>
 </template>
 <style lang="scss">
