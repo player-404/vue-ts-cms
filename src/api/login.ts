@@ -8,7 +8,7 @@ const loginRequest = new Request({
 });
 
 //账号登录
-export const signInAccounts = (account: string, password: number | string) =>
+export const signInAccount = (account: string, password: number | string) =>
   loginRequest.post({
     url: "/login",
     data: {

@@ -2,12 +2,13 @@ import { ILoginState } from "./../type";
 import { Module } from "vuex";
 import { SET_CODE, SET_ACCOUNT, SET_PHONE, SET_ACCOUNR_DATA } from "../type";
 import instance from "@/api/myApiTest";
-import { signInAccounts } from "@/api/login";
+import Cookie from "js-cookie";
 import {
   useSetStorage,
   useClearStorage,
   useGetStorage,
 } from "@/utils/useStorage";
+import { useSignIn } from "@/utils/useSignIn";
 import { useCipher, useDecrypt } from "@/utils/useCrypto";
 
 interface data {
@@ -72,10 +73,14 @@ const actions = {
     //将要缓存的密码：可能时缓存中的加密密码，也可能是重新加密后的密码字符串
     let storagePassword = "";
     console.log("payload", payload);
-    const data = await signInAccounts(payload.account, payload.password);
+    const data = await useSignIn("account", {
+      account: payload.account,
+      password: payload.password,
+    });
     console.log("data", data);
     commit(SET_ACCOUNR_DATA, data.data.data);
-
+    // 缓存token
+    Cookie.set("token", data.data.data.token, { expires: 7 });
     // 记住密码 缓存数据
     if (payload.remember) {
       const { value } = useGetStorage("accountInfo");

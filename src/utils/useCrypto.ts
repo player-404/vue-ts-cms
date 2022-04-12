@@ -37,6 +37,7 @@ export function useComparePassword(
   return passwordText;
 }
 
+// 判断用户输入的密码是否与缓存中的密码相同，相同则是缓存数据，需要解码，否则则不需要
 export const useStatus = (password: string, storageKey: string): boolean => {
   const { value } = useGetStorage(storageKey);
   if (!value.value) return false;

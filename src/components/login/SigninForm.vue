@@ -83,25 +83,11 @@ const submit = (formInstance: FormInstance | undefined) => {
           // 缓存中的是加密后的密码，入如果输入框中的密码与缓存中的密码一直，则该密码需要解码，再去发送登录请求
           passwordText = useComparePassword(password.value, "accountInfo");
         }
-        store
-          .dispatch("login/signInAccount", {
-            account: account.value,
-            password: `${passwordText}`,
-            remember: rememberPass.value,
-          })
-          .then(() => {
-            ElNotification({
-              title: "登录成功",
-              type: "success",
-            });
-          })
-          .catch(() => {
-            ElNotification({
-              title: "登录失败",
-              message: "请检查你的账号或密码",
-              type: "error",
-            });
-          });
+        store.dispatch("login/signInAccount", {
+          account: account.value,
+          password: `${passwordText}`,
+          remember: rememberPass.value,
+        });
       }
     } else {
       ElNotification({
@@ -150,6 +136,8 @@ if (signIn.value === SignInType.ACCOUNT) {
 if (signIn.value === SignInType.EMAIL) {
   getEmailStoeage();
 }
+
+// 缓存记住密码的状态
 watch(rememberPass, (newv) => {
   useSetStorage("remember", newv);
 });
