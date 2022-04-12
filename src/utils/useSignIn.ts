@@ -1,6 +1,5 @@
-import { signInAccounts, signInEmail, signInPhone } from "@/api/login";
+import { signInEmail, signInPhone } from "@/api/login";
 import { ElNotification } from "element-plus";
-import type { AxiosResponse } from "axios";
 function signIn(type: "phone" | "email" | "account", payload: any) {
   if (type === "phone") return signInPhone(payload.phone, payload.code);
   if (type === "email") return signInEmail(payload.emai, payload.password);
