@@ -5,7 +5,6 @@
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */
-
 const AutoImport = require("unplugin-auto-import/webpack");
 const Components = require("unplugin-vue-components/webpack");
 const { ElementPlusResolver } = require("unplugin-vue-components/resolvers");
@@ -15,6 +14,15 @@ const { ElementPlusResolver } = require("unplugin-vue-components/resolvers");
 module.exports = {
   publicPath: "./",
   assetsDir: "./",
+  devServer: {
+    proxy: {
+      "/api": {
+        target: "http://152.136.185.210:5000",
+        changeOrigin: true,
+        pathRewrite: { "^/api": "" },
+      },
+    },
+  },
   // configureWebpack 可以接受一个对象或函数
   // 接收一个对象，里面的配置会与vue-cli配置好的webpack配置合并
   configureWebpack: {

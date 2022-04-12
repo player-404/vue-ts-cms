@@ -1,18 +1,65 @@
 <script setup lang="ts">
 import SignUpAccountForm from "./SignUpAccountForm.vue";
-import SignUpPhone from "./SignUpPhone.vue";
+import SignUpPhone from "./PhoneForm.vue";
 import SignUpComplete from "./SignUpComplete.vue";
+import SinUpButton from "./SignUpButton.vue";
+
+import { ElNotification } from "element-plus";
+import type { FormInstance } from "element-plus";
 
 import { ref, computed } from "vue";
-const active = ref(1);
+import { useStore } from "vuex";
+import { SET_PHONE } from "@/store/type";
+
+const store = useStore();
+//步骤条当前步数
+const active = ref(0);
+const phoneNumber = ref<number>();
 
 const activeComponent = computed(() => {
-  return active.value === 1
+  return active.value === 0
     ? SignUpAccountForm
-    : active.value === 2
+    : active.value === 1
     ? SignUpPhone
     : SignUpComplete;
 });
+
+//手机验证 上一步按钮触发
+const preStep = () => {
+  active.value--;
+};
+
+//手机验证结果
+const phoneValidateStatus = ref(false);
+
+//手机验证表单数据提交
+const submit = (formInstance: FormInstance | undefined) => {
+  console.log("instance", formInstance);
+  formInstance?.validate((valite) => {
+    if (valite) {
+      // TODO: 手机验证成功，提交账号密码手机号数据
+      console.log("注册完成", active.value);
+
+      // 将手机号码存储值 vuex
+      store.commit(`login/${SET_PHONE}`, { phone: phoneNumber.value });
+
+      //下一步
+      active.value++;
+
+      setTimeout(() => {
+        console.log("注册成功");
+        phoneValidateStatus.value = true;
+        active.value++;
+      }, 5000);
+    } else {
+      ElNotification({
+        title: "验证失败",
+        message: "手机验证失败，请重试",
+        type: "warning",
+      });
+    }
+  });
+};
 </script>
 <template>
   <!-- 注册 -->
@@ -38,7 +85,22 @@ const activeComponent = computed(() => {
       appear
       mode="out-in"
     > -->
-    <component :is="activeComponent" v-model:step="active" />
+    <div class="sign-up-form-container mt-30">
+      <component
+        :is="activeComponent"
+        v-model:step="active"
+        v-slot="slotProps"
+        :phoneValidateStatus="phoneValidateStatus"
+        v-model:phone="phoneNumber"
+      >
+        <sin-up-button
+          v-if="active === 1"
+          @preStep="preStep"
+          @submit="submit(slotProps.formInstance)"
+          class="mt-25"
+        />
+      </component>
+    </div>
     <!-- </Transition> -->
   </div>
 </template>
@@ -51,6 +113,12 @@ const activeComponent = computed(() => {
   .step {
     width: 100%;
     transform: scale(0.9);
+  }
+  .sign-up-form-container {
+    width: 100%;
+    height: 270px;
+    display: flex;
+    justify-content: center;
   }
   .v-move {
     position: absolute;

@@ -2,6 +2,9 @@
 import { reactive, ref } from "vue";
 import { UserFilled, Lock } from "@element-plus/icons-vue";
 import type { FormInstance } from "element-plus";
+import { useStore } from "vuex";
+import { SET_ACCOUNT } from "@/store/type";
+const store = useStore();
 
 // 提交按钮l oading
 const loading = ref(false);
@@ -59,7 +62,7 @@ const rules = reactive({
   ],
 });
 
-//提交表单
+//注册表单提交
 const submit = (formInstance: FormInstance | undefined) => {
   loading.value = true;
   if (!formInstance) {
@@ -71,7 +74,13 @@ const submit = (formInstance: FormInstance | undefined) => {
     if (valid) {
       console.log("表单提交成功");
       loading.value = false;
-
+      //TODO:发送注册请求
+      //将数据存储值vuex
+      store.commit(`login/${SET_ACCOUNT}`, {
+        account: signUpData.account,
+        password: signUpData.password,
+      });
+      //注册成功进入下一步
       emit("update:step", props.step + 1);
     } else {
       loading.value = false;
@@ -105,6 +114,7 @@ const submit = (formInstance: FormInstance | undefined) => {
           clearable
           input-style="width: 250px"
           placeholder="请输入你的密码"
+          show-password
         ></el-input>
       </el-form-item>
       <!-- 确认密码 -->
@@ -116,6 +126,7 @@ const submit = (formInstance: FormInstance | undefined) => {
           size="default"
           placeholder="请输入你的确认密码"
           type="password"
+          show-password
           clearable
         ></el-input>
       </el-form-item>
@@ -145,7 +156,7 @@ const submit = (formInstance: FormInstance | undefined) => {
     width: 100%;
   }
 }
-:deep .el-form-item {
+:deep(.el-form-item) {
   padding-bottom: 10px;
 }
 </style>

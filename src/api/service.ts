@@ -83,7 +83,7 @@ class Request {
   }
 
   // request请求 与 axios request请求一致
-  request<T>(config: IOfConfig): Promise<AxiosResponse<T>> {
+  request<T = any>(config: IOfConfig): Promise<AxiosResponse<T>> {
     return new Promise((resolve, reject) => {
       //默认显示，可以传入false关闭
       this.showLoading = config.showLoading ?? true;
@@ -110,22 +110,22 @@ class Request {
   }
 
   // get请求
-  get<T>(config: IOfConfig): Promise<AxiosResponse<T>> {
+  get<T = any>(config: IOfConfig): Promise<AxiosResponse<T>> {
     return this.request<T>({ method: "get", ...config });
   }
 
   // post请求
-  post<T>(config: IOfConfig): Promise<AxiosResponse<T>> {
+  post<T = any>(config: IOfConfig): Promise<AxiosResponse<T>> {
     return this.request<T>({ method: "post", ...config });
   }
 
   // patch请求
-  patch<T>(config: IOfConfig): Promise<AxiosResponse<T>> {
+  patch<T = any>(config: IOfConfig): Promise<AxiosResponse<T>> {
     return this.request<T>({ method: "patch", ...config });
   }
 
   // delete请求
-  delete<T>(config: IOfConfig): Promise<AxiosResponse<T>> {
+  delete<T = any>(config: IOfConfig): Promise<AxiosResponse<T>> {
     return this.request<T>({ method: "delete", ...config });
   }
 }

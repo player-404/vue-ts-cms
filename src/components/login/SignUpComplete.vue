@@ -1,21 +1,44 @@
 <script setup lang="ts">
-const props = defineProps(["step"]);
+import Process from "./Progress.vue";
+
+import SignUpSuccess from "./SignUpSuccess.vue";
+
+import { watch, ref } from "vue";
+
+const props = defineProps(["phoneValidateStatus"]);
+
+let activeComponent = ref("Process");
+
+const com: any = {
+  Process,
+  SignUpSuccess,
+};
+
+watch(
+  () => props,
+  (newv) => {
+    if (newv.phoneValidateStatus) {
+      let timer = setTimeout(() => {
+        activeComponent.value = "SignUpSuccess";
+        clearTimeout(timer);
+      }, 1000);
+    }
+  },
+  { deep: true }
+);
 </script>
 <template>
   <div class="sign-up-complete">
-    <el-row>
-      <el-col>
-        <el-result
-          icon="success"
-          title="注册成功"
-          sub-title="点击登录按钮立即登录吧~"
-        >
-          <template #extra>
-            <el-button type="primary">立即登录</el-button>
-          </template>
-        </el-result>
-      </el-col>
-    </el-row>
+    <Transition
+      enter-active-class="animate__animated animate__fadeIn"
+      leave-active-class="animate__animated animate__fadeOut"
+      mode="out-in"
+    >
+      <component
+        :is="com[activeComponent]"
+        :resultStatus="props.phoneValidateStatus"
+      />
+    </Transition>
   </div>
 </template>
 <style lang="scss" scoped>

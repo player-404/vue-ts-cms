@@ -2,27 +2,35 @@
 // We suggest you to commit this file into source control
 // Read more: https://github.com/vuejs/vue-next/pull/3399
 
-declare module "vue" {
+declare module 'vue' {
   export interface GlobalComponents {
-    ElButton: typeof import("element-plus/es")["ElButton"];
-    ElCol: typeof import("element-plus/es")["ElCol"];
-    ElForm: typeof import("element-plus/es")["ElForm"];
-    ElFormItem: typeof import("element-plus/es")["ElFormItem"];
-    ElInput: typeof import("element-plus/es")["ElInput"];
-    ElResult: typeof import("element-plus/es")["ElResult"];
-    ElRow: typeof import("element-plus/es")["ElRow"];
-    ElStep: typeof import("element-plus/es")["ElStep"];
-    ElSteps: typeof import("element-plus/es")["ElSteps"];
-    FormContainer: typeof import("./src/components/login/FormContainer.vue")["default"];
-    LoginForm: typeof import("./src/components/login/LoginForm.vue")["default"];
-    SignInForm: typeof import("./src/components/login/SignInForm.vue")["default"];
-    SignUpAccountForm: typeof import("./src/components/login/SignUpAccountForm.vue")["default"];
-    SignUpComplete: typeof import("./src/components/login/SignUpComplete.vue")["default"];
-    SignUpForm: typeof import("./src/components/login/SignUpForm.vue")["default"];
-    SignUpPhone: typeof import("./src/components/login/SignUpPhone.vue")["default"];
-    SwitchForm: typeof import("./src/components/login/SwitchForm.vue")["default"];
-    ZpButton: typeof import("./src/components/login/ZpButton.vue")["default"];
+    AccountForm: typeof import('./src/components/login/AccountForm.vue')['default']
+    ElButton: typeof import('element-plus/es')['ElButton']
+    ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
+    ElCol: typeof import('element-plus/es')['ElCol']
+    ElForm: typeof import('element-plus/es')['ElForm']
+    ElFormItem: typeof import('element-plus/es')['ElFormItem']
+    ElInput: typeof import('element-plus/es')['ElInput']
+    ElProgress: typeof import('element-plus/es')['ElProgress']
+    ElResult: typeof import('element-plus/es')['ElResult']
+    ElRow: typeof import('element-plus/es')['ElRow']
+    ElStep: typeof import('element-plus/es')['ElStep']
+    ElSteps: typeof import('element-plus/es')['ElSteps']
+    ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    EmailForm: typeof import('./src/components/login/EmailForm.vue')['default']
+    FormContainer: typeof import('./src/components/login/FormContainer.vue')['default']
+    LoginForm: typeof import('./src/components/login/LoginForm.vue')['default']
+    PhoneForm: typeof import('./src/components/login/PhoneForm.vue')['default']
+    Progress: typeof import('./src/components/login/Progress.vue')['default']
+    SignInForm: typeof import('./src/components/login/SignInForm.vue')['default']
+    SignUpAccountForm: typeof import('./src/components/login/SignUpAccountForm.vue')['default']
+    SignUpButton: typeof import('./src/components/login/SignUpButton.vue')['default']
+    SignUpComplete: typeof import('./src/components/login/SignUpComplete.vue')['default']
+    SignUpForm: typeof import('./src/components/login/SignUpForm.vue')['default']
+    SignUpSuccess: typeof import('./src/components/login/SignUpSuccess.vue')['default']
+    SwitchForm: typeof import('./src/components/login/SwitchForm.vue')['default']
+    ZpButton: typeof import('./src/components/login/ZpButton.vue')['default']
   }
 }
 
-export {};
+export { }

@@ -3,16 +3,17 @@ import type { FormInstance } from "element-plus";
 
 import { ElNotification } from "element-plus";
 
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive, computed, watch, onMounted } from "vue";
 import { useStore } from "vuex";
 
-const props = defineProps(["step"]);
-const emit = defineEmits(["update:step"]);
 const store = useStore();
+defineProps(["formInstance", "phone"]);
+const emit = defineEmits(["update:formInstance", "update:phone"]);
 
 //发送的验证码
 const code = computed<number>(() => store.state.login.code);
-
+//手机号码验证状态
+const phoneCheckStatus = ref<boolean>(true);
 //表单数据
 const formData = reactive<{
   phoneNumber: number | undefined;
@@ -33,9 +34,22 @@ const time = ref(60);
 
 // 手机号码验证规则
 const validatePhoneNumber = (rule: any, value: any, callback: any) => {
-  if (!value) callback(new Error("手机号码不能为空"));
-  if (!Number.isInteger(value)) callback(new Error("请输入正确的手机号"));
-  if (!rule.rule.test(value)) callback(new Error("手机号码格式错误"));
+  if (!value) {
+    phoneCheckStatus.value = false;
+    callback(new Error("手机号码不能为空"));
+    return;
+  }
+  if (!Number.isInteger(value)) {
+    phoneCheckStatus.value = false;
+    callback(new Error("请输入正确的手机号"));
+    return;
+  }
+  if (!rule.rule.test(value)) {
+    phoneCheckStatus.value = false;
+    callback(new Error("手机号码格式错误"));
+    return;
+  }
+  phoneCheckStatus.value = true;
   callback();
 };
 
@@ -58,10 +72,34 @@ const rules = reactive({
   authCode: [{ validator: validateAuthCode, trigger: "change" }],
 });
 
+//双向数据绑定phone
+const phoneChange = () => {
+  emit("update:phone", formData.phoneNumber);
+};
+
 //获取验证码
 const getCode = () => {
+  if (!formData.phoneNumber) {
+    ElNotification({
+      title: "手机号码不能为空",
+      message: "请输入手机号码",
+      type: "warning",
+      duration: 2000,
+    });
+    return;
+  } else if (!phoneCheckStatus.value) {
+    ElNotification({
+      title: "手机号码格式不正确",
+      message: "请输入正确的手机号码",
+      type: "warning",
+      duration: 2000,
+    });
+    return;
+  }
   getCodeMsg.value = `${time.value}秒后重试`;
   countDown();
+  // 发送请求获取验证码
+  //TODO:发送获取验证码请求
   store
     .dispatch("login/getCode")
     .then(() => {
@@ -72,6 +110,9 @@ const getCode = () => {
         type: "success",
         duration: 1000,
       });
+
+      // 更新手机号码数据
+      emit("update:phone", formData.phoneNumber);
     })
     .catch(() => {
       console.log("数据请求失败");
@@ -92,6 +133,7 @@ watch(code, (newv) => {
     message: `${newv}`,
   });
 });
+
 //倒计时
 const countDown = () => {
   const timer = setInterval(() => {
@@ -106,25 +148,9 @@ const countDown = () => {
   }, 1000);
 };
 
-//返回上一步
-const preStep = () => {
-  emit("update:step", props.step - 1);
-};
-
-// 提交验证数据
-const submit = (phoneForms: FormInstance | undefined) => {
-  phoneForms?.validate((valite) => {
-    if (valite) {
-      emit("update:step", props.step + 1);
-    } else {
-      ElNotification({
-        title: "验证失败",
-        message: "手机验证失败，请重试",
-        type: "warning",
-      });
-    }
-  });
-};
+onMounted(() => {
+  emit("update:formInstance", phoneForm.value);
+});
 </script>
 <template>
   <div class="signUpPhone">
@@ -140,6 +166,7 @@ const submit = (phoneForms: FormInstance | undefined) => {
           placeholder="请输入你的手机号"
           input-style="width: 250px"
           v-model.number="formData.phoneNumber"
+          @input="phoneChange"
         ></el-input>
       </el-form-item>
       <!-- 验证码 -->
@@ -153,25 +180,13 @@ const submit = (phoneForms: FormInstance | undefined) => {
           getCodeMsg
         }}</el-button>
       </el-form-item>
-      <el-form-item>
-        <el-button style="width: 110px" @click="preStep">上一步</el-button>
-        <el-button
-          style="width: 110px"
-          type="primary"
-          @click="submit(phoneForm)"
-          >提交</el-button
-        >
-      </el-form-item>
     </el-form>
+    <!-- 按钮插槽 -->
+    <slot :formInstance="phoneForm"></slot>
   </div>
 </template>
 <style lang="scss" scoped>
 .signUpPhone {
-  height: 270px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   .phone-form {
     width: 250px;
     display: block;
@@ -183,5 +198,8 @@ const submit = (phoneForms: FormInstance | undefined) => {
       width: 105px;
     }
   }
+}
+:deep(.el-form-item) {
+  padding-bottom: 10px;
 }
 </style>

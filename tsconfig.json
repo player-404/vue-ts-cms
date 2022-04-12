@@ -11,6 +11,10 @@
     // 辅助导入
     "importHelpers": true,
     "moduleResolution": "node",
+    // ???
+    "suppressImplicitAnyIndexErrors": true,
+    //强类型检查
+    "noImplicitAny": false,
     // 跳过一些库的类型检测
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -44,5 +48,5 @@
   // 哪些代码不需要类型解析
   "exclude": [
     "node_modules"
-  ]
+  ],
 }

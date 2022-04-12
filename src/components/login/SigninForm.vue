@@ -1,22 +1,64 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, computed, reactive, watch } from "vue";
+
 import type { FormInstance } from "element-plus";
-import { UserFilled, Lock } from "@element-plus/icons-vue";
+import { ElNotification } from "element-plus";
+
+import SignInAccount from "./AccountForm.vue";
+import SignInEmail from "./EmailForm.vue";
+import SignInPhone from "./PhoneForm.vue";
+import { useStore } from "vuex";
+import { useSetStorage, useGetStorage } from "@/utils/useStorage";
+import { useComparePassword } from "@/utils/useCrypto";
+
+enum SignInType {
+  ACCOUNT,
+  PHONE,
+  EMAIL,
+}
+//表单实例
+const signIn = ref<SignInType>(SignInType.ACCOUNT);
+//表单数据
+const email = ref<string>();
+const account = ref<string>();
+const password = ref<string>();
+const phone = ref<number>();
+//缓存密码：用来判断是否需要解密
+const storePassWord = ref<string>();
+
+const store = useStore();
+//其他登录方式 icon
+const icon = reactive({
+  [SignInType.ACCOUNT]: "http://img.zphlplay.top/vue-ts-cms/peopleNew.png",
+  [SignInType.PHONE]: "http://img.zphlplay.top/vue-ts-cms/iphone.png",
+  [SignInType.EMAIL]: "http://img.zphlplay.top/vue-ts-cms/email-lock.png",
+});
+//动态组件
+const activeComponent = computed(() => {
+  return signIn.value === SignInType.ACCOUNT
+    ? SignInAccount
+    : signIn.value === SignInType.PHONE
+    ? SignInPhone
+    : SignInEmail;
+});
 
 //表单实例
-const signInForm = ref<FormInstance>();
+const formInstance = ref<FormInstance>();
 
-//表单数据
-const signInFormData = reactive({
-  account: "",
-  password: "",
-});
-
-//验证规则
-const rules = reactive({
-  account: [{ required: true, message: "账号不能为空", trigger: "blur" }],
-  password: [{ required: true, message: "请输入你的密码", trigger: "blur" }],
-});
+// 手机登录
+const signInPhone = () => {
+  signIn.value = SignInType.PHONE;
+};
+//邮箱登录
+const signInEmail = () => {
+  signIn.value = SignInType.EMAIL;
+};
+//账号登录
+const signInAccount = () => {
+  signIn.value = SignInType.ACCOUNT;
+};
+//记住密码
+const rememberPass = ref<boolean>(false);
 
 //提交表单
 const submit = (formInstance: FormInstance | undefined) => {
@@ -24,79 +66,190 @@ const submit = (formInstance: FormInstance | undefined) => {
   formInstance.validate((valit) => {
     if (valit) {
       console.log("表单提交成功");
+      //TODO: 手机登录
+      if (signIn.value === SignInType.PHONE) {
+        console.log("phone signIn");
+      }
+      //TODO: 邮箱登录
+      if (signIn.value === SignInType.EMAIL) {
+        console.log("email", email.value);
+        console.log("password", password.value);
+      }
+      //TODO: 账号登录
+      if (signIn.value === SignInType.ACCOUNT) {
+        // 密码解码
+        let passwordText = "";
+        if (password.value) {
+          // 缓存中的是加密后的密码，入如果输入框中的密码与缓存中的密码一直，则该密码需要解码，再去发送登录请求
+          passwordText = useComparePassword(password.value, "accountInfo");
+        }
+        store
+          .dispatch("login/signInAccount", {
+            account: account.value,
+            password: `${passwordText}`,
+            remember: rememberPass.value,
+          })
+          .then(() => {
+            ElNotification({
+              title: "登录成功",
+              type: "success",
+            });
+          })
+          .catch(() => {
+            ElNotification({
+              title: "登录失败",
+              message: "请检查你的账号或密码",
+              type: "error",
+            });
+          });
+      }
     } else {
+      ElNotification({
+        title: "登录失败",
+        type: "error",
+      });
       return false;
     }
   });
 };
+
+//缓存中获取是否记住密码
+const getRememberStorage = () => {
+  const { value } = useGetStorage("remember");
+  if (value.value != null) {
+    rememberPass.value = JSON.parse(value.value);
+  }
+};
+//获取账号本地缓存
+const getAccountStorage = () => {
+  if (!rememberPass.value) return;
+  const { value } = useGetStorage("accountInfo");
+  if (!value.value) return;
+  const accountInfo = JSON.parse(value.value);
+  account.value = accountInfo.account;
+  password.value = accountInfo.password;
+  storePassWord.value = accountInfo.password;
+};
+//获取邮箱本地缓存
+const getEmailStoeage = () => {
+  if (!rememberPass.value) return;
+  const { value } = useGetStorage("EmailInfo");
+  if (!value.value) return;
+  const accountInfo = JSON.parse(value.value);
+  email.value = accountInfo.account;
+  password.value = accountInfo.password;
+  storePassWord.value = accountInfo.password;
+};
+
+getRememberStorage();
+
+if (signIn.value === SignInType.ACCOUNT) {
+  getAccountStorage();
+}
+
+if (signIn.value === SignInType.EMAIL) {
+  getEmailStoeage();
+}
+watch(rememberPass, (newv) => {
+  useSetStorage("remember", newv);
+});
 </script>
 <template>
   <div id="sing-in-form">
-    <h1 class="title">登录</h1>
-    <el-form ref="signInForm" :model="signInFormData" :rules="rules">
-      <!-- 账号 -->
-      <!-- prop: 需要验证的数据 -->
-      <el-form-item prop="account">
-        <el-input
-          v-model="signInFormData.account"
-          placeholder="请输入你的账号"
+    <Transition
+      tag="div"
+      class="title"
+      enter-active-class="animate__animated animate__fadeInDown animate__faster"
+      leave-active-class="animate__animated animate__fadeOutUp animate__faster"
+      mode="out-in"
+    >
+      <h1 class="title" v-if="signIn === SignInType.ACCOUNT">账号登录</h1>
+      <h1 class="title" v-else-if="signIn === SignInType.PHONE">手机登录</h1>
+      <h1 class="title" v-else>邮箱登录</h1>
+    </Transition>
+    <div class="sign-in-container mt-1">
+      <Transition
+        enter-active-class="animate__animated animate__fadeInRight animate__faster"
+        leave-active-class="animate__animated animate__fadeOutLeft animate__faster"
+        mode="out-in"
+      >
+        <component
+          :is="activeComponent"
+          v-model:formInstance="formInstance"
+          v-model:account="account"
+          v-model:password="password"
+          v-model:email="email"
+          v-model:phone="phone"
+          :rememberPass="rememberPass"
+        />
+      </Transition>
+      <div
+        class="pass-tool-container"
+        v-show="signIn === SignInType.ACCOUNT || signIn === SignInType.EMAIL"
+      >
+        <el-checkbox v-model="rememberPass" label="记住密码" size="large" />
+        <el-button type="text">忘记密码</el-button>
+      </div>
+      <!-- 表单提交 -->
+      <div class="submit">
+        <el-button
+          type="primary"
+          :loading="false"
           size="default"
-          input-style="width: 250px"
-          clearable
-          :prefix-icon="UserFilled"
-          status-icon
-        />
-      </el-form-item>
-      <!-- 密码 -->
-      <el-form-item prop="password">
-        <el-input
-          v-model="signInFormData.password"
-          placeholder="请输入你的密码"
-          type="password"
-          show-password
-          clearable
-          :prefix-icon="Lock"
-        />
-      </el-form-item>
-      <!-- 提交表单 -->
-      <el-form-item>
-        <div class="submit">
-          <el-button
-            type="primary"
-            :loading="false"
-            size="default"
-            class="btn"
-            @click="submit(signInForm)"
-            >登录</el-button
-          >
-        </div>
-      </el-form-item>
+          class="btn"
+          @click="submit(formInstance)"
+          >登录</el-button
+        >
+      </div>
       <!-- 其他登录方式 -->
-      <el-form-item class="other-login mt-15">
+      <div class="other-login">
+        <!-- 账号登录 -->
+        <el-tooltip
+          effect="light"
+          content="账号登录"
+          placement="bottom-start"
+          v-if="!(signIn === SignInType.ACCOUNT)"
+        >
+          <el-button circle @click="signInAccount">
+            <template #icon>
+              <div class="other-login-btn">
+                <img :src="icon[SignInType.ACCOUNT]" alt="账号登录" />
+              </div>
+            </template>
+          </el-button>
+        </el-tooltip>
         <!-- 手机登录 -->
-        <el-button circle class="mr-15">
-          <template #icon>
-            <div class="other-login-btn">
-              <img
-                src="http://img.zphlplay.top/vue-ts-cms/iphone.png"
-                alt="手机登录"
-              />
-            </div>
-          </template>
-        </el-button>
+        <el-tooltip
+          effect="light"
+          content="手机登录"
+          placement="bottom-start"
+          v-if="!(signIn === SignInType.PHONE)"
+        >
+          <el-button circle @click="signInPhone">
+            <template #icon>
+              <div class="other-login-btn">
+                <img :src="icon[SignInType.PHONE]" alt="手机登录" />
+              </div>
+            </template>
+          </el-button>
+        </el-tooltip>
         <!-- 邮箱登录 -->
-        <el-button circle class="ml-15">
-          <template #icon>
-            <div class="other-login-btn">
-              <img
-                src="http://img.zphlplay.top/vue-ts-cms/email-lock.png"
-                alt="邮箱登录"
-              />
-            </div>
-          </template>
-        </el-button>
-      </el-form-item>
-    </el-form>
+        <el-tooltip
+          effect="light"
+          content="邮箱登录"
+          placement="bottom-start"
+          v-if="!(signIn === SignInType.EMAIL)"
+        >
+          <el-button circle @click="signInEmail">
+            <template #icon>
+              <div class="other-login-btn">
+                <img :src="icon[SignInType.EMAIL]" alt="邮箱登录" />
+              </div>
+            </template>
+          </el-button>
+        </el-tooltip>
+      </div>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -104,26 +257,43 @@ const submit = (formInstance: FormInstance | undefined) => {
   text-align: center;
   margin-bottom: 30px;
 }
-.submit {
-  width: 100%;
-  .btn {
-    width: 100%;
-  }
-}
 
-.other-login-btn {
-  width: 80%;
-  height: 80%;
-  transform: scale(1.6);
-  > img {
+.sign-in-form {
+  transition: all 0.5s;
+}
+.sign-in-container {
+  width: 100%;
+  overflow: hidden;
+  .submit {
     width: 100%;
-    height: 100%;
+    .btn {
+      width: 100%;
+    }
+  }
+
+  .other-login {
+    width: 100px;
+    display: flex;
+    justify-content: space-between;
+    margin: 25px auto;
+    .other-login-btn {
+      justify-content: center;
+      width: 80%;
+      height: 80%;
+      transform: scale(1.6);
+      font-size: 0;
+      > img {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
 }
-:deep(.el-form-item__content) {
-  justify-content: center;
-}
-:deep(.el-form-item) {
-  padding-bottom: 10px;
+.pass-tool-container {
+  margin-top: -20px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
