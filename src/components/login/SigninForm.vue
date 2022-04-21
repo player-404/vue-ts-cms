@@ -3,7 +3,6 @@ import { ref, computed, reactive, watch } from "vue";
 
 import type { FormInstance } from "element-plus";
 import { ElNotification } from "element-plus";
-
 import SignInAccount from "./AccountForm.vue";
 import SignInEmail from "./EmailForm.vue";
 import SignInPhone from "./PhoneForm.vue";
@@ -83,6 +82,7 @@ const submit = (formInstance: FormInstance | undefined) => {
           // 缓存中的是加密后的密码，入如果输入框中的密码与缓存中的密码一直，则该密码需要解码，再去发送登录请求
           passwordText = useComparePassword(password.value, "accountInfo");
         }
+        console.log("passwordText", passwordText);
         store.dispatch("login/signInAccount", {
           account: account.value,
           password: `${passwordText}`,
@@ -103,7 +103,7 @@ const submit = (formInstance: FormInstance | undefined) => {
 const getRememberStorage = () => {
   const { value } = useGetStorage("remember");
   if (value.value != null) {
-    rememberPass.value = JSON.parse(value.value);
+    rememberPass.value = value.value;
   }
 };
 //获取账号本地缓存
@@ -111,7 +111,7 @@ const getAccountStorage = () => {
   if (!rememberPass.value) return;
   const { value } = useGetStorage("accountInfo");
   if (!value.value) return;
-  const accountInfo = JSON.parse(value.value);
+  const accountInfo = value.value;
   account.value = accountInfo.account;
   password.value = accountInfo.password;
   storePassWord.value = accountInfo.password;
@@ -121,7 +121,7 @@ const getEmailStoeage = () => {
   if (!rememberPass.value) return;
   const { value } = useGetStorage("EmailInfo");
   if (!value.value) return;
-  const accountInfo = JSON.parse(value.value);
+  const accountInfo = value.value;
   email.value = accountInfo.account;
   password.value = accountInfo.password;
   storePassWord.value = accountInfo.password;

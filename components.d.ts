@@ -5,12 +5,16 @@
 declare module 'vue' {
   export interface GlobalComponents {
     AccountForm: typeof import('./src/components/login/AccountForm.vue')['default']
+    ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCol: typeof import('element-plus/es')['ElCol']
+    ElContainer: typeof import('element-plus/es')['ElContainer']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
+    ElHeader: typeof import('element-plus/es')['ElHeader']
     ElInput: typeof import('element-plus/es')['ElInput']
+    ElMain: typeof import('element-plus/es')['ElMain']
     ElProgress: typeof import('element-plus/es')['ElProgress']
     ElResult: typeof import('element-plus/es')['ElResult']
     ElRow: typeof import('element-plus/es')['ElRow']
@@ -19,6 +23,7 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     EmailForm: typeof import('./src/components/login/EmailForm.vue')['default']
     FormContainer: typeof import('./src/components/login/FormContainer.vue')['default']
+    Header: typeof import('./src/components/home/Header.vue')['default']
     LoginForm: typeof import('./src/components/login/LoginForm.vue')['default']
     PhoneForm: typeof import('./src/components/login/PhoneForm.vue')['default']
     Progress: typeof import('./src/components/login/Progress.vue')['default']
@@ -28,6 +33,7 @@ declare module 'vue' {
     SignUpComplete: typeof import('./src/components/login/SignUpComplete.vue')['default']
     SignUpForm: typeof import('./src/components/login/SignUpForm.vue')['default']
     SignUpSuccess: typeof import('./src/components/login/SignUpSuccess.vue')['default']
+    SlideMenu: typeof import('./src/components/home/SlideMenu.vue')['default']
     SwitchForm: typeof import('./src/components/login/SwitchForm.vue')['default']
     ZpButton: typeof import('./src/components/login/ZpButton.vue')['default']
   }

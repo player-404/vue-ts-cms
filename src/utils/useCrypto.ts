@@ -41,5 +41,5 @@ export function useComparePassword(
 export const useStatus = (password: string, storageKey: string): boolean => {
   const { value } = useGetStorage(storageKey);
   if (!value.value) return false;
-  return JSON.parse(value.value).password === password;
+  return value.value.password === password;
 };

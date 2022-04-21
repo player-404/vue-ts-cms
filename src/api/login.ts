@@ -1,15 +1,8 @@
-import Request from "./service";
-
-const baseURL = process.env.VUE_APP_BASE_URL;
-
-const loginRequest = new Request({
-  baseURL,
-  timeout: 5000,
-});
+import request from "./request";
 
 //账号登录
 export const signInAccount = (account: string, password: number | string) =>
-  loginRequest.post({
+  request.post({
     url: "/login",
     data: {
       name: account,
@@ -19,7 +12,7 @@ export const signInAccount = (account: string, password: number | string) =>
 
 //邮箱登录
 export const signInEmail = (email: string, password: number | string) =>
-  loginRequest.post({
+  request.post({
     url: "/phoneLogin",
     data: {
       email,
@@ -29,10 +22,18 @@ export const signInEmail = (email: string, password: number | string) =>
 
 //手机号登录
 export const signInPhone = (phone: number, code: number) =>
-  loginRequest.post({
+  request.post({
     url: "/emailLogin",
     data: {
       phone,
       code,
     },
   });
+
+//获取角色信息(权限)
+export const getUserInfo = (userId: number) =>
+  request.get({ url: `users/${userId}` });
+
+// 获取角色菜单
+export const getUserMenu = (roleId: number) =>
+  request.get({ url: `/role/${roleId}/menu` });

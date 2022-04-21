@@ -7,7 +7,11 @@ export function useSetStorage(key: string, value: any) {
 }
 
 export function useGetStorage(key: string) {
-  const item = localstorage.getItem(key);
+  let item: any = localstorage.getItem(key);
+  if (item != "undefined") {
+    item = JSON.parse(item);
+  }
+
   const value = ref(item);
 
   return { value };

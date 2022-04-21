@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { AxiosInstance, AxiosResponse } from "axios";
 import { IOfIterceptors, IOfConfig } from "./types";
-
+import Cookies from "js-cookie";
 import { ElLoading } from "element-plus";
 import type { LoadingInstance } from "element-plus/es/components/loading/src/loading";
 
@@ -32,6 +32,13 @@ class Request {
     this.axiosInstance.interceptors.request.use(
       (config) => {
         console.log("全局的请求拦截器");
+        if (Cookies.get("token")) {
+          const token = Cookies.get("token").split("&")[0];
+          console.log("token", token);
+          config.headers = {
+            Authorization: `Bearer ${token}`,
+          };
+        }
 
         if (this.showLoading) {
           // 开启loading组件
