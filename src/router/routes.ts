@@ -2,7 +2,12 @@ import { RouteRecordRaw } from "vue-router";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
+    redirect: "/main",
+  },
+  {
+    path: "/main",
     name: "Home",
+    redirect: "/main/analysis/overview",
     component: () =>
       import(/* webpackChunkName: "home" */ "@/views/home/Home.vue"),
   },
@@ -20,6 +25,11 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
+  },
+  {
+    path: "/:path(.*)*",
+    name: "NotFound",
+    component: () => import("@/views/notfound/NotFound.vue"),
   },
 ];
 

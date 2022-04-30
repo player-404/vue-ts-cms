@@ -7,8 +7,8 @@ import SignInAccount from "./AccountForm.vue";
 import SignInEmail from "./EmailForm.vue";
 import SignInPhone from "./PhoneForm.vue";
 import { useStore } from "vuex";
-import { useSetStorage, useGetStorage } from "@/utils/useStorage";
-import { useComparePassword } from "@/utils/useCrypto";
+import { useSetStorage, useGetStorage } from "@/utils/storage";
+import { useComparePassword } from "@/utils/crypto";
 
 enum SignInType {
   ACCOUNT,

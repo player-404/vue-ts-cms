@@ -12,8 +12,6 @@ const { ElementPlusResolver } = require("unplugin-vue-components/resolvers");
 // const ElementPlus = require("unplugin-element-plus/webpack");
 
 module.exports = {
-  publicPath: "./",
-  assetsDir: "./",
   devServer: {
     proxy: {
       "/api": {

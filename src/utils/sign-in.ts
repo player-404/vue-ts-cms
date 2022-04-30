@@ -19,7 +19,7 @@ export async function useSignIn(
       title: "登录成功",
       type: "success",
     });
-    router.push({ name: "Home" });
+    router.push({ path: "/" });
     return data;
   } catch (error) {
     console.log("err", error);

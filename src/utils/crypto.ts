@@ -2,7 +2,7 @@ import Crypto from "crypto-js";
 
 import { ref } from "vue";
 
-import { useGetStorage } from "./useStorage";
+import { useGetStorage } from "./storage";
 const key = process.env.VUE_APP_KEY || "123";
 
 let text: string;

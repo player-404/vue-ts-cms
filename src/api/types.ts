@@ -10,3 +10,15 @@ export interface IOfConfig extends AxiosRequestConfig {
   interceptors?: IOfIterceptors;
   showLoading?: boolean;
 }
+
+export type pageType = "users" | "department" | "role" | "goods" | "menu";
+export type queryConfig = {
+  offset: number;
+  size: number;
+  [prop: string]: any;
+};
+//用户管理
+export interface Iconfig {
+  pageName: pageType;
+  queryConfig: queryConfig;
+}

@@ -1,24 +1,25 @@
 import { ILoginState } from "./../type";
 import { Module } from "vuex";
+import { addMenus } from "@/utils/get-user-menu-list";
+import router from "@/router";
 import {
   SET_CODE,
   SET_ACCOUNT,
   SET_PHONE,
   SET_ACCOUNR_DATA,
   SET_MENU,
+  SET_PERMISSION,
+  SET_TOKEN,
+  SET_USERINFO,
 } from "../type";
 import instance from "@/api/myApiTest";
 import { getUserInfo, getUserMenu } from "@/api/login";
 import Cookie from "js-cookie";
-import {
-  useSetStorage,
-  useClearStorage,
-  useGetStorage,
-} from "@/utils/useStorage";
-import { useSignIn } from "@/utils/useSignIn";
-import { useCipher, useDecrypt } from "@/utils/useCrypto";
-import addMenus from "@/utils/getUserMenuList";
-
+import { useSetStorage, useClearStorage, useGetStorage } from "@/utils/storage";
+import { useSignIn } from "@/utils/sign-in";
+import { useCipher, useDecrypt } from "@/utils/crypto";
+import mapMenu from "@/utils/map-menu";
+import Cookies from "js-cookie";
 interface data {
   code: number;
 }
@@ -35,6 +36,9 @@ const state = function () {
     phone: undefined,
     accountInfo: {},
     menu: [],
+    permission: [],
+    token: "",
+    userInfo: [],
   };
 };
 
@@ -58,12 +62,38 @@ const mutations = {
     state.accountInfo = payload;
   },
   [SET_MENU](state, payload) {
-    console.log("设置menu");
     state.menu = payload.menu;
+  },
+  [SET_PERMISSION](state, payload) {
+    state.permission = payload.permission;
+  },
+  [SET_TOKEN](state, payload) {
+    state.token = payload.token;
+  },
+  [SET_USERINFO](state, payload) {
+    state.userInfo = payload.userInfo;
   },
 };
 
 const actions = {
+  loadLocalSotrage({ commit, dispatch }) {
+    const token = Cookies.get("token");
+
+    if (token) {
+      commit(SET_TOKEN, { token: token });
+      const { value } = useGetStorage("menu");
+      if (value.value) {
+        console.log("取缓存");
+        commit(SET_MENU, { menu: value.value });
+      } else {
+        dispatch("userInfo");
+      }
+    }
+    const accountInfo = useGetStorage("accountInfo");
+    if (accountInfo) {
+      commit(SET_ACCOUNR_DATA, accountInfo);
+    }
+  },
   //获取手机验证码
   getCode(context: any) {
     return new Promise((resolve, reject) => {
@@ -120,12 +150,12 @@ const actions = {
         account: payload.account,
         password: storagePassword,
       });
-
-      await dispatch("userInfo", data.data.data.id);
     } else {
       //清除缓存
       useClearStorage("accountInfo");
     }
+    console.log("获取用户信息");
+    await dispatch("userInfo", { id: data.data.data.id });
   },
 
   // 邮箱登录
@@ -141,7 +171,7 @@ const actions = {
   },
 
   // 获取角色信息
-  async userInfo({ dispatch }, payload) {
+  async userInfo({ commit }, payload) {
     let userId: number;
     if (payload) {
       userId = payload.id;
@@ -150,17 +180,16 @@ const actions = {
     }
     console.log("userid", userId);
     const data = await getUserInfo(userId);
-    await dispatch("userMenu", { roleId: data.data.data.role.id });
+    commit(SET_USERINFO, { userInfo: data.data.data });
   },
   // 获取角色菜单
   async userMenu({ commit }, payload) {
     const data = await getUserMenu(payload.roleId);
-    console.log("menu data", data);
-    //动态添加路由
-    addMenus(data.data.data);
     commit(SET_MENU, { menu: data.data.data });
-    useSetStorage("menu", data.data.data);
-    console.log("userMenu", data);
+  },
+  async permission({ commit }, payload) {
+    const permission = mapMenu(payload.menu);
+    commit(SET_PERMISSION, { perrmission: permission });
   },
 };
 

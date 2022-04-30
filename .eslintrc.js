@@ -26,5 +26,6 @@ module.exports = {
     // eslint 与 vue3 setup 语法冲突， dinfineProps与defineemits 不需要导入 但eslint会报错
     defineProps: "readonly",
     defineEmits: "readonly",
+    defineExpose: "readonly"
   },
 };
